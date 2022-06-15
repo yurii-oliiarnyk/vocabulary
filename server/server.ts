@@ -1,6 +1,6 @@
 import express from "express";
+import wordsRouter from "./routes/api/words";
 import mongoose from "mongoose";
-import { getWords, getWord, createWord, deleteWord, updateWord } from "./routes/api/words";
 
 const app = express();
 
@@ -17,12 +17,7 @@ mongoose.connect(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-app.get("/api/words", getWords);
-app.get("/api/words/:id", getWord);
-app.put("/api/words/:id", updateWord);
-app.post("/api/words", createWord);
-app.delete("/api/words/:id", deleteWord);
+app.use("/api/words/", wordsRouter);
 
 const PORT = process.env.PORT || 4000;
 
