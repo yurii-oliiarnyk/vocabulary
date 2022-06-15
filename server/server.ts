@@ -1,5 +1,5 @@
 import express from "express";
-import wordsRouter from "./routes/api/words";
+import apiRouter from "./routes/api";
 import mongoose from "mongoose";
 
 const app = express();
@@ -17,7 +17,7 @@ mongoose.connect(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use("/api/words/", wordsRouter);
+app.use("/api", apiRouter);
 
 const PORT = process.env.PORT || 4000;
 
