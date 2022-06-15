@@ -45,8 +45,8 @@ export const createWord = async (
   try {
     const word = new Word({
       _id: new mongoose.Types.ObjectId(),
-      translations: req.body.translations,
       value: req.body.value,
+      translations: req.body.translations,
     });
 
     const createWord = await word.save();

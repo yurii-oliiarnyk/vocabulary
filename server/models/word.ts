@@ -4,12 +4,12 @@ import { IWord } from "../types/words";
 const wordSchema = new Schema<IWord>(
   {
     _id: mongoose.SchemaTypes.ObjectId,
-    translations: {
+    value: {
       type: String,
       required: true,
       minlength: 1,
     },
-    value: {
+    translations: {
       type: String,
       required: true,
       minlength: 1,
