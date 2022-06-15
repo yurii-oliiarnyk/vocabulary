@@ -1,4 +1,5 @@
-export type Word = {
-  value: string;
+export interface IWord {
+  _id: string;
   translations: string;
-};
+  value: string;
+}

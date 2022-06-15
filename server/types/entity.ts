@@ -5,7 +5,3 @@ export type EntityListResponse<T> = {
   limit: number;
   page: number;
 };
-
-export type Entity<T> = T & {
-  id: string;
-};

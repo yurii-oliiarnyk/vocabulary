@@ -1,54 +1,67 @@
 import { Request, Response } from "express";
-import { Entity, EntityListResponse } from "../../types/entity";
-import { Word } from "../../types/words";
+import mongoose from "mongoose";
+import { EntityListResponse } from "../../types/entity";
+import { IWord } from "../../types/words";
+import { Word } from "../../models/word";
 
-const wordStorage: Entity<Word>[] = [];
-
-export const getWords = (
-  req: Request<any, any, EntityListResponse<Entity<Word>>, any, { limit?: number; page?: number }>,
-  res: Response<EntityListResponse<Entity<Word>>>
+export const getWords = async (
+  req: Request<any, any, EntityListResponse<IWord>, any, { limit?: number; page?: number }>,
+  res: Response<any>
 ) => {
-  const { limit = 10, page = 1 } = req.query;
-  const words = [...wordStorage].splice((page - 1) * limit, page * limit);
+  try {
+    const { limit = 10, page = 1 } = req.query;
 
-  res.send({
-    limit,
-    page,
-    total: wordStorage.length,
-    totalPages: Math.ceil(wordStorage.length / limit),
-    data: words,
-  });
+    const wordsCount = await Word.count();
+    const words = await Word.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    res.send({
+      data: words,
+      limit,
+      page,
+      count: wordsCount,
+      totalPages: Math.ceil(wordsCount / limit),
+    });
+  } catch (e) {
+    res.status(400).send(e);
+  }
 };
 
-export const createWord = (
-  req: Request<any, any, any, Word>,
-  res: Response<any, Entity<Word>>
-): void => {
-  const word = req.body;
+export const getWord = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const word = await Word.findById(req.params.id);
 
-  if (word.translations && word.translations.length > 0 && word.value && word.value.length > 0) {
-    const createdWord: Entity<Word> = {
-      ...word,
-      id: Math.random().toString(),
-    };
-
-    wordStorage.push(createdWord);
-
-    res.send(createdWord);
+    res.send({ data: word });
+  } catch (e) {
+    res.status(404).send({ message: "Can't find entity with id: " + req.params.id });
   }
-
-  res.status(400).send({ error: "Bad request" });
 };
 
-export const deleteWord = (req: Request<{ id: string }>, res: Response) => {
-  const entityId = req.params.id;
-  const removedEntityIndex = wordStorage.findIndex((word) => word.id === entityId);
+export const createWord = async (
+  req: Request<any, any, any, Omit<IWord, "_id">>,
+  res: Response<any, IWord>
+) => {
+  try {
+    const word = new Word({
+      _id: new mongoose.Types.ObjectId(),
+      translations: req.body.translations,
+      value: req.body.value,
+    });
 
-  if (removedEntityIndex !== -1) {
-    wordStorage.splice(removedEntityIndex, 1);
+    await word.save();
 
-    res.send({ success: true });
+    res.send(word);
+  } catch (e) {
+    res.status(400).send({ message: "Error saving word." });
   }
+};
 
-  res.status(403).send({ error: "Entity with id " + entityId + " does not exist." });
+export const deleteWord = async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    await Word.findByIdAndDelete(req.params.id);
+    res.send(true);
+  } catch (e) {
+    res.status(400).send({ message: "Can't delete entity with id: " + req.params.id });
+  }
 };
