@@ -39,7 +39,7 @@ export const getWord = async (req: Request<{ id: string }>, res: Response) => {
 };
 
 export const createWord = async (
-  req: Request<any, any, any, Omit<IWord, "_id">>,
+  req: Request<any, any, Omit<IWord, "_id">>,
   res: Response<any, IWord>
 ) => {
   try {
@@ -49,19 +49,41 @@ export const createWord = async (
       value: req.body.value,
     });
 
-    await word.save();
+    const createWord = await word.save();
 
-    res.send(word);
-  } catch (e) {
-    res.status(400).send({ message: "Error saving word." });
+    res.send(createWord);
+  } catch (error) {
+    res.status(400).send(error);
   }
 };
 
 export const deleteWord = async (req: Request<{ id: string }>, res: Response) => {
   try {
-    await Word.findByIdAndDelete(req.params.id);
-    res.send(true);
+    const word = await Word.findByIdAndRemove(req.params.id);
+
+    if (!word) {
+      res.status(400).send({ message: "Word with id: " + req.params.id + " already deleted." });
+    }
+
+    res.send({ success: true, message: "Word deleted." });
   } catch (e) {
     res.status(400).send({ message: "Can't delete entity with id: " + req.params.id });
+  }
+};
+
+export const updateWord = async (
+  req: Request<{ id: string }, any, IWord, any>,
+  res: Response<any, IWord>
+) => {
+  try {
+    const word = await Word.findByIdAndUpdate(req.params.id, req.body).exec();
+
+    if (!word) {
+      res.status(400).send({ message: "Word with id: " + req.params.id + " doesn't exist." });
+    }
+
+    res.send(word);
+  } catch (e) {
+    res.status(400).send({ message: "Error updateing word." });
   }
 };
