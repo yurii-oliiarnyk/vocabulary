@@ -1,23 +1,23 @@
 import express from "express";
-import apiRouter from "./routes/api";
+import dotenv from "dotenv";
+import api from "./routes/api";
 import mongoose from "mongoose";
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const app = express();
 
-const MONGODB_USERNAME = "root";
-const MONGODB_PASSWORD = "1406";
-const MONGODB_CLUSTER = "cluster0.znpih";
-
 mongoose.connect(
-  `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER}.mongodb.net/?retryWrites=true&w=majority`,
+  `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}.mongodb.net`,
   {
-    autoCreate: true,
+    w: "majority",
+    retryWrites: true,
   }
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use("/api", apiRouter);
+app.use("/api", api);
 
 const PORT = process.env.PORT || 4000;
 
