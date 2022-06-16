@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
-import { EntityListResponse } from "../../types/entity";
-import { IWord } from "../../types/words";
+import { EntityListResponse } from "~/types/entity";
+import { IWord } from "~/types/words";
 import { Word } from "../../models/word";
 
 const router = express.Router();

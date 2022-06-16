@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IWord } from "../types/words";
+import { IWord } from "~/types/words";
 
 const wordSchema = new Schema<IWord>(
   {
