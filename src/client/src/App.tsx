@@ -1,7 +1,11 @@
-import React from "react";
+import { WordsPage } from "./pages/WordsPage";
 
-function App() {
-  return <div className="App">App</div>;
-}
+const App = () => {
+  return (
+    <div className="App">
+      <WordsPage />
+    </div>
+  );
+};
 
 export default App;
