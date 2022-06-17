@@ -16,9 +16,7 @@ router.get(
       const { limit = 10, page = 1 } = req.query;
 
       const wordsCount = await Word.count();
-      const words = await Word.find()
-        .skip((page - 1) * limit)
-        .limit(limit);
+      const words = await Word.find({}, {}, { sort: { id: 1 }, limit, skip: (page - 1) * limit });
 
       res.send({
         data: words,

@@ -3,3 +3,5 @@
 *::before {
   box-sizing: border-box;
 }
+
+@import url("antd/dist/antd.min.css");

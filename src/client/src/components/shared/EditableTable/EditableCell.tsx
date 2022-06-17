@@ -8,6 +8,7 @@ interface EditableCellProps<T> {
   title: React.ReactNode;
   editable: boolean;
   children: React.ReactNode;
+  className: string;
   dataIndex: keyof T;
   record: T;
   handleSave: (record: T) => void;
@@ -20,6 +21,7 @@ export const EditableCell = <T extends Object>({
   dataIndex,
   record,
   handleSave,
+  className,
   ...restProps
 }: EditableCellProps<T>) => {
   const [editing, setEditing] = useState(false);
@@ -71,5 +73,9 @@ export const EditableCell = <T extends Object>({
     );
   }
 
-  return <td {...restProps}>{childNode}</td>;
+  return (
+    <td {...restProps} className={`${className} editable-cell`}>
+      {childNode}
+    </td>
+  );
 };
