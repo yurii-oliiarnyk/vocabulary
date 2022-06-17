@@ -1,10 +1,7 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import api from "./routes/api";
 import mongoose from "mongoose";
-
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const app = express();
 
@@ -26,4 +23,6 @@ app.use("/api", api);
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => console.log(`⚡Server is running here 👉 https://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`⚡Server is running here 👉 https://localhost:${PORT}`)
+);
