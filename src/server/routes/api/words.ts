@@ -81,7 +81,7 @@ router.put(
   "/:id",
   async (req: Request<{ id: string }, any, IWord, any>, res: Response<any, IWord>) => {
     try {
-      const word = await Word.findByIdAndUpdate(req.params.id, req.body).exec();
+      const word = await Word.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
 
       if (!word) {
         res.status(400).send({ message: "Word with id: " + req.params.id + " doesn't exist." });
